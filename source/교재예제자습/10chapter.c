@@ -120,7 +120,7 @@ double find_max(double *pa, int size)
 
 #endif
 
-#if 0 // p.312 10-5
+#if 0 // p.312 10-6
 
 #include <stdio.h>
 
