@@ -244,7 +244,6 @@ int sum(int a, int b)
     return a+b;
 }
 
-
 #endif
 
 #if 0 // p.459 15-6
