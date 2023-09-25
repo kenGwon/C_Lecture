@@ -1,5 +1,5 @@
 
-#if 1
+#if 0
 
 #include <stdio.h>
 
@@ -31,7 +31,7 @@ int main(void)
 
 #endif
 
-#if 0
+#if 1
 
 #include <stdio.h>
 #include <string.h>
