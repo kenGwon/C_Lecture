@@ -22,9 +22,10 @@ int main(void)
     
     u.BYTE = 0xff;
     printf("u.BYTE: %0x\n", u.BYTE);
-    u.s.b3 = 0;
+    // u.s.b3 = 0;
+    u.s.lownibble = 0;
     printf("u.BYTE: %0x\n", u.BYTE);
-          
+    
     return 0;
 }
 
