@@ -2,7 +2,7 @@
   - 모든 Requirement 구현 완료(찾지 못한 edge case가 아마 없을건데 있을수도 있음).
   - (주의1) reservation.txt에는 반드시 ASCII로 표현 가능한 문자만 존재하여야 함(한글 X).
   - (주의2) 터미널 입력 포멧에 대한 예외처리를 안했기 때문에, 정확한 포멧으로 터미널 입력이 들어가야 함.
-  - (참고1) 테스트를 위해 파일 경로 변경이 필요할 경우, fopen()이 위치한 라인은 80라인, 534라인 두 곳임.
+  - (참고1) 테스트를 위해 파일 경로 변경이 필요할 경우, fopen()이 위치한 라인은 82라인, 529라인 두 곳임.
   - (참고2) 테스트 하기 적합하게 미리 구성하여 배포한 reservation.txt를 이용하면, 기능 테스트가 수월함.
 */
 
@@ -10,33 +10,33 @@
 #include <string.h>
 #include <stdlib.h>
 
-typedef struct 
+typedef struct
 {
-	char year[6];
-	char month[4];
-	char day[4];
-	char time[6];
+    char year[6];
+    char month[4];
+    char day[4];
+    char time[6];
 } _stDate;
 
 typedef struct _node
-{ 
-	char address[40];
-	char phone[40];
-	char name[20];
-	_stDate enter_date;
-	_stDate exit_date;
-	int roomno;
-	int price;
-	struct _node* prev;
-	struct _node* next;
+{
+    char address[40];
+    char phone[40];
+    char name[20];
+    _stDate enter_date;
+    _stDate exit_date;
+    int roomno;
+    int price;
+    struct _node *prev;
+    struct _node *next;
 } t_Node;
 
-typedef struct 
+typedef struct
 {
-	t_Node* head_node;
-    t_Node* tail_node;
-    t_Node* curr_node;
-	int num_of_node;
+    t_Node *head_node;
+    t_Node *tail_node;
+    t_Node *curr_node;
+    int num_of_node;
 } t_List;
 
 // main.c에 붙어도 될 만한 느낌의 함수들
@@ -52,8 +52,8 @@ void AllPersonDisplay(t_List *list);
 void ExitProgram(t_List *list);
 
 // 분할했으면 static 했을 만한 느낌의 함수들
-t_List* initDoubleLinkedList(void);
-t_Node* searchReservationByName(t_List *list, char *name);
+t_List *initDoubleLinkedList(void);
+t_Node *searchReservationByName(t_List *list, char *name);
 void readFileWriteMemory(FILE *fp, t_List *list);
 void readMemoryWriteFile(FILE *fp, t_List *list);
 void refine_stDate(_stDate *date, char *temp);
@@ -61,9 +61,9 @@ int checkAvailability(t_List *list, t_Node *new_node);
 
 int main(void)
 {
-	reservationManagement();
+    reservationManagement();
 
-	return 0;
+    return 0;
 }
 
 /*
@@ -71,33 +71,33 @@ int main(void)
 */
 void reservationManagement(void)
 {
-	char input_buff[20];
+    char input_buff[20];
     int select;
-	
+
     FILE *fp;
-	t_List *list;
+    t_List *list;
 
-	list = initDoubleLinkedList();
+    list = initDoubleLinkedList();
 
-	fp = fopen("source\\HW\\reservation.txt", "r");
+    fp = fopen("source\\HW\\reservation.txt", "r");
     if (fp == NULL)
-	{
-		printf("파일열기에 실패했습니다.\n"); 
-		exit(1); // 프로세스 종료 main() return code 1: 파일열기 실패
-	}
+    {
+        printf("파일열기에 실패했습니다.\n");
+        exit(1); // 프로세스 종료 main() return code 1: 파일열기 실패
+    }
 
-	readFileWriteMemory(fp, list); // 파일 데이터를 모두 더블링크드리스트에 동적할당하여 메모리로 이관
-	fclose(fp);
+    readFileWriteMemory(fp, list); // 파일 데이터를 모두 더블링크드리스트에 동적할당하여 메모리로 이관
+    fclose(fp);
 
-    void (*pfunction[])(t_List*) = {NULL, 
-                                    CreateReservation, DeleteReservation, ModifyReservation, 
-                                    OnePersonDisplay, AllPersonDisplay};
+    void (*pfunction[])(t_List *) = {NULL,
+                                     CreateReservation, DeleteReservation, ModifyReservation,
+                                     OnePersonDisplay, AllPersonDisplay};
 
-	while(1)
-	{
-		menuDisplay();
-		printf("\n메뉴선택>> ");
-		fgets(input_buff,sizeof(input_buff),stdin);
+    while (1)
+    {
+        menuDisplay();
+        printf("\n메뉴선택>> ");
+        fgets(input_buff, sizeof(input_buff), stdin);
         printf("\n");
         select = atoi(input_buff);
 
@@ -113,7 +113,7 @@ void reservationManagement(void)
         {
             printf("잘못된 입력입니다.\n");
         }
-	}
+    }
 }
 
 /*
@@ -121,21 +121,20 @@ void reservationManagement(void)
 */
 void menuDisplay(void)
 {
-	int i;
-	char menu[10][60] = {
-	"==================< 객실 관리 >==================",
-	"   1. 입력(예약)",
-	"   2. 삭제(퇴실)",
-	"   3. 수정(예약내역수정)",
-	"   4. 조회(개별조회)",
-	"   5. 전체조회(예약자 전체조회)",
-	" ",
-	"   9. 종료"
-	};
-	
+    int i;
+    char menu[10][60] = {
+        "==================< 객실 관리 >==================",
+        "   1. 입력(예약)",
+        "   2. 삭제(퇴실)",
+        "   3. 수정(예약내역수정)",
+        "   4. 조회(개별조회)",
+        "   5. 전체조회(예약자 전체조회)",
+        " ",
+        "   9. 종료"};
+
     printf("\n\n");
-	for (i=0; i < 8; i++)
-		printf("%s\n", menu[i]);
+    for (i = 0; i < 8; i++)
+        printf("%s\n", menu[i]);
 }
 
 /*
@@ -143,88 +142,88 @@ void menuDisplay(void)
   - param1: 더블 링크드 리스트 포인터
 */
 void CreateReservation(t_List *list)
-{ 
-	char input_buff[100];
-	t_Node *new_node;
+{
+    char input_buff[100];
+    t_Node *new_node;
 
-	new_node = (t_Node*)malloc(sizeof(t_Node));
+    new_node = (t_Node *)malloc(sizeof(t_Node));
     if (new_node == NULL)
     {
         printf("동적할당에 실패했습니다.\n");
         exit(2); // 프로세스 종료 main() return code 2: 동적할당 실패
     }
 
-	printf("---------< 입실 예약 >---------\n");
-	printf("객실 번호: ");
-	fgets(input_buff, sizeof(input_buff), stdin);
-	input_buff[strlen(input_buff) - 1] = '\0';
-	new_node->roomno = atoi(input_buff);
+    printf("---------< 입실 예약 >---------\n");
+    printf("객실 번호: ");
+    fgets(input_buff, sizeof(input_buff), stdin);
+    input_buff[strlen(input_buff) - 1] = '\0';
+    new_node->roomno = atoi(input_buff);
 
-	printf("성함: ");
-	fgets(input_buff, sizeof(input_buff), stdin);
-	input_buff[strlen(input_buff) - 1] = '\0';
-	strcpy(new_node->name, input_buff);
+    printf("성함: ");
+    fgets(input_buff, sizeof(input_buff), stdin);
+    input_buff[strlen(input_buff) - 1] = '\0';
+    strcpy(new_node->name, input_buff);
 
-	printf("전화번호: ");
-	fgets(input_buff, sizeof(input_buff), stdin);
-	input_buff[strlen(input_buff) - 1] = '\0';
-	strcpy(new_node->phone, input_buff);
+    printf("전화번호: ");
+    fgets(input_buff, sizeof(input_buff), stdin);
+    input_buff[strlen(input_buff) - 1] = '\0';
+    strcpy(new_node->phone, input_buff);
 
-	printf("요금: ");
-	fgets(input_buff, sizeof(input_buff), stdin);
-	input_buff[strlen(input_buff) - 1] = '\0';
-	new_node->price = atoi(input_buff);
+    printf("요금: ");
+    fgets(input_buff, sizeof(input_buff), stdin);
+    input_buff[strlen(input_buff) - 1] = '\0';
+    new_node->price = atoi(input_buff);
 
-	printf("주소: ");
-	fgets(input_buff, sizeof(input_buff), stdin);
-	input_buff[strlen(input_buff) - 1] = '\0';
-	strcpy(new_node->address, input_buff);
+    printf("주소: ");
+    fgets(input_buff, sizeof(input_buff), stdin);
+    input_buff[strlen(input_buff) - 1] = '\0';
+    strcpy(new_node->address, input_buff);
 
-	printf("입실예정시각(yyyy-mm-dd-hhmm): ");
-	fgets(input_buff, sizeof(input_buff), stdin);
-	input_buff[strlen(input_buff) - 1] = '\0';
-	strcpy(new_node->enter_date.year, strtok(input_buff, "-"));
-	strcpy(new_node->enter_date.month, strtok(NULL, "-"));
-	strcpy(new_node->enter_date.day, strtok(NULL, "-"));
-	strcpy(new_node->enter_date.time, strtok(NULL, "-"));
+    printf("입실예정시각(yyyy-mm-dd-hhmm): ");
+    fgets(input_buff, sizeof(input_buff), stdin);
+    input_buff[strlen(input_buff) - 1] = '\0';
+    strcpy(new_node->enter_date.year, strtok(input_buff, "-"));
+    strcpy(new_node->enter_date.month, strtok(NULL, "-"));
+    strcpy(new_node->enter_date.day, strtok(NULL, "-"));
+    strcpy(new_node->enter_date.time, strtok(NULL, "-"));
 
-	printf("퇴실예정시각(yyyy-mm-dd-hhmm): ");
-	fgets(input_buff, sizeof(input_buff), stdin);
-	input_buff[strlen(input_buff) - 1] = '\0';
-	strcpy(new_node->exit_date.year, strtok(input_buff, "-"));
-	strcpy(new_node->exit_date.month, strtok(NULL, "-"));
-	strcpy(new_node->exit_date.day, strtok(NULL, "-"));
-	strcpy(new_node->exit_date.time, strtok(NULL, "-"));
+    printf("퇴실예정시각(yyyy-mm-dd-hhmm): ");
+    fgets(input_buff, sizeof(input_buff), stdin);
+    input_buff[strlen(input_buff) - 1] = '\0';
+    strcpy(new_node->exit_date.year, strtok(input_buff, "-"));
+    strcpy(new_node->exit_date.month, strtok(NULL, "-"));
+    strcpy(new_node->exit_date.day, strtok(NULL, "-"));
+    strcpy(new_node->exit_date.time, strtok(NULL, "-"));
 
-	printf("\n");
-	printf("확인(y/n): ");
-	fgets(input_buff, sizeof(input_buff), stdin);
+    printf("\n");
+    printf("확인(y/n): ");
+    fgets(input_buff, sizeof(input_buff), stdin);
     input_buff[strlen(input_buff) - 1] = '\0';
 
-	if (strncmp(input_buff, "y", 1) == 0)
-	{
-		// 해당 객실이 해당 시간에 예약 가능하면 insert, 불가능하면 free().
-		if (checkAvailability(list, new_node))
-		{
-			new_node->next = list->tail_node->next;
+    if (strncmp(input_buff, "y", 1) == 0)
+    {
+        // 해당 객실이 해당 시간에 예약 가능하면 insert, 불가능하면 free().
+        if (checkAvailability(list, new_node))
+        {
+            new_node->next = list->tail_node->next;
             new_node->prev = list->tail_node;
 
             list->tail_node->next = new_node;
             list->tail_node = new_node;
             list->num_of_node++;
             printf("예약이 완료되었습니다.\n");
-		}
-		else
-		{
-			printf("해당 시간에 이미 예약된 객실입니다. 예약이 취소됩니다.\n");
-			free(new_node);
-		}
-	}
-	else // 사용자 선택에 의한 예약 취소
-	{
-		printf("입실 예약이 취소되었습니다.\n");
-		free(new_node);
-	}
+        }
+        else
+        {
+            printf("해당 시간에 이미 예약된 객실입니다. 예약이 취소됩니다.\n");
+            free(new_node);
+        }
+    }
+    else // 사용자 선택에 의한 예약 취소
+    {
+        printf("입실 예약이 취소되었습니다.\n");
+        free(new_node);
+    }
 }
 
 /*
@@ -280,7 +279,7 @@ void DeleteReservation(t_List *list)
     else
     {
         printf("해당 이름으로 예약이 존재하지 않습니다.\n");
-    } 
+    }
 }
 
 /*
@@ -295,7 +294,7 @@ void ModifyReservation(t_List *list)
     int select;
     t_Node *target_reservation;
     char temp_enter_date[4][10], temp_exit_date[4][10];
-    
+
     printf("---------< 예약 수정 >---------\n");
     printf("예약자 성함: ");
     fgets(input_buff, sizeof(input_buff), stdin);
@@ -328,14 +327,14 @@ void ModifyReservation(t_List *list)
             {
                 printf("정상 수정되었습니다.\n");
             }
-            else 
+            else
             {
                 printf("해당 시간에 해당 객실은 사용중이기 때문에 불가능합니다.\n");
                 target_reservation->roomno = temp_roomno;
             }
 
             break;
-        
+
         case 2:
             printf("바꾸실 예약자분 성함을 입력하세요: ");
             fgets(input_buff, sizeof(input_buff), stdin);
@@ -343,7 +342,7 @@ void ModifyReservation(t_List *list)
             strcpy(target_reservation->name, input_buff);
             printf("정상 수정되었습니다.\n");
             break;
-        
+
         case 3:
             printf("바꾸실 전화번호를 입력하세요: ");
             fgets(input_buff, sizeof(input_buff), stdin);
@@ -359,7 +358,7 @@ void ModifyReservation(t_List *list)
             target_reservation->price = atoi(input_buff);
             printf("정상 수정되었습니다.\n");
             break;
-        
+
         case 5:
             printf("바꾸실 주소를 입력하세요: ");
             fgets(input_buff, sizeof(input_buff), stdin);
@@ -387,7 +386,7 @@ void ModifyReservation(t_List *list)
             {
                 printf("정상 수정되었습니다.\n");
             }
-            else 
+            else
             {
                 printf("해당 시간에 해당 객실은 사용중이기 때문에 불가능합니다.\n");
                 strcpy(target_reservation->enter_date.year, temp_enter_date[0]);
@@ -416,7 +415,7 @@ void ModifyReservation(t_List *list)
             {
                 printf("정상 수정되었습니다.\n");
             }
-            else 
+            else
             {
                 printf("해당 시간에 해당 객실은 사용중이기 때문에 불가능합니다.\n");
                 strcpy(target_reservation->exit_date.year, temp_exit_date[0]);
@@ -424,7 +423,7 @@ void ModifyReservation(t_List *list)
                 strcpy(target_reservation->exit_date.day, temp_exit_date[2]);
                 strcpy(target_reservation->exit_date.time, temp_exit_date[3]);
             }
-            break;        
+            break;
 
         default:
             printf("잘못된 입력입니다.\n");
@@ -483,7 +482,7 @@ void AllPersonDisplay(t_List *list)
 {
     int i;
     char temp_enter_date[20] = {'\0'}, temp_exit_date[20] = {'\0'};
-    
+
     printf("---------------------------------------------< 전체조회(예약자 전체조회) >----------------------------------------------\n");
     printf("객실  이름            전화번호             요금       주소                 입실시간             퇴실시간                  \n");
     printf("-----------------------------------------------------------------------------------------------------------------------\n");
@@ -502,7 +501,7 @@ void AllPersonDisplay(t_List *list)
         printf("%-20s ", temp_enter_date);
         refine_stDate(&list->curr_node->exit_date, temp_exit_date);
         printf("%-20s ", temp_exit_date);
-        
+
         printf("\n");
 
         list->curr_node = list->curr_node->prev;
@@ -515,10 +514,10 @@ void AllPersonDisplay(t_List *list)
 */
 void ExitProgram(t_List *list)
 {
-	int i;
+    int i;
     char input_buff[100];
     FILE *fp;
-    
+
     printf("---------< 종료 >---------\n");
     printf("확인 (y/n): ");
     fgets(input_buff, sizeof(input_buff), stdin);
@@ -529,13 +528,13 @@ void ExitProgram(t_List *list)
         fp = fopen("source\\HW\\reservation.txt", "w");
         if (fp == NULL)
         {
-            printf("파일열기에 실패했습니다.\n"); 
+            printf("파일열기에 실패했습니다.\n");
             exit(1); // 프로세스 종료 main() return code 1: 파일열기 실패
         }
-        
+
         rewind(fp);
         readMemoryWriteFile(fp, list);
-        fclose(fp); 
+        fclose(fp);
         free(list);
         exit(0); // 프로세스 종료 main() return code 0: 정상종료
     }
@@ -549,25 +548,25 @@ void ExitProgram(t_List *list)
   - desc: 더블 링크드 리스트를 initialize한다.
   - return: init_node를 가진 더블 링크드 리스트를 리턴한다.
 */
-t_List* initDoubleLinkedList(void)
+t_List *initDoubleLinkedList(void)
 {
-	t_List *list;
+    t_List *list;
     t_Node *init_node;
 
-	list = (t_List*)malloc(sizeof(t_List));
-	if (list == NULL)
-	{
-		printf("동적할당에 실패했습니다.\n");
+    list = (t_List *)malloc(sizeof(t_List));
+    if (list == NULL)
+    {
+        printf("동적할당에 실패했습니다.\n");
         exit(2); // 프로세스 종료 main() return code 2: 동적할당 실패
-	}
-    
-    init_node = (t_Node*)malloc(sizeof(t_Node));
-	if (init_node == NULL)
-	{
-		printf("동적할당에 실패했습니다.\n");
+    }
+
+    init_node = (t_Node *)malloc(sizeof(t_Node));
+    if (init_node == NULL)
+    {
+        printf("동적할당에 실패했습니다.\n");
         exit(2); // 프로세스 종료 main() return code 2: 동적할당 실패
-	}
-    
+    }
+
     init_node->prev = NULL;
     init_node->next = NULL;
 
@@ -576,7 +575,7 @@ t_List* initDoubleLinkedList(void)
     list->curr_node = init_node;
     list->num_of_node = 0;
 
-	return list;
+    return list;
 }
 
 /*
@@ -585,7 +584,7 @@ t_List* initDoubleLinkedList(void)
   - param2: 검색할 이름 문자열
   - return: 검색에 성공하면 찾은 노드를 반환하고, 검색에 실패하면 NULL을 리턴한다.
 */
-t_Node* searchReservationByName(t_List *list, char *name)
+t_Node *searchReservationByName(t_List *list, char *name)
 {
     int i;
 
@@ -609,21 +608,22 @@ t_Node* searchReservationByName(t_List *list, char *name)
 /*
   - desc: 파일에 있는 텍스트를 읽어, 메모리에 있는 더블 링크드 리스트 자료구조에 옮겨 쓴다.
   - param1: 파일 포인터
-  - param2: 더블 링크드 리스트 포인터 
+  - param2: 더블 링크드 리스트 포인터
 */
 void readFileWriteMemory(FILE *fp, t_List *list)
 {
-	char input_buff[200];
-	char enter_date[20], exit_date[20];
-	t_Node *new_node, *prev;
+    char input_buff[200];
+    char enter_date[20], exit_date[20];
+    t_Node *new_node, *prev;
 
-    while(1)
+    while (1)
     {
         fgets(input_buff, sizeof(input_buff), fp);
-        if (feof(fp)) break;
+        if (feof(fp))
+            break;
         input_buff[strlen(input_buff) - 1] = '\0';
-        
-        new_node = (t_Node*)malloc(sizeof(t_Node));
+
+        new_node = (t_Node *)malloc(sizeof(t_Node));
         if (new_node == NULL)
         {
             printf("동적할당에 실패했습니다.\n");
@@ -638,7 +638,7 @@ void readFileWriteMemory(FILE *fp, t_List *list)
 
         strcpy(enter_date, strtok(NULL, ":"));
         strcpy(exit_date, strtok(NULL, ":"));
-        
+
         strcpy(new_node->enter_date.year, strtok(enter_date, "-"));
         strcpy(new_node->enter_date.month, strtok(NULL, "-"));
         strcpy(new_node->enter_date.day, strtok(NULL, "-"));
@@ -656,13 +656,12 @@ void readFileWriteMemory(FILE *fp, t_List *list)
         list->tail_node = new_node;
         list->num_of_node++;
     }
-	
 }
 
 /*
   - desc: 메모리에 있는 더블 링크드 리스트 자료구조를 읽어, 파일에 텍스트로 옮겨 쓴다.
   - param1: 파일 포인터
-  - param2: 더블 링크드 리스트 포인터 
+  - param2: 더블 링크드 리스트 포인터
 */
 void readMemoryWriteFile(FILE *fp, t_List *list)
 {
@@ -672,11 +671,11 @@ void readMemoryWriteFile(FILE *fp, t_List *list)
     for (i = 0; i < list->num_of_node; i++)
     {
         fprintf(fp, "%d:%s:%s:%d:%s:%s-%s-%s-%s:%s-%s-%s-%s\n", list->curr_node->roomno,
-        list->curr_node->name, list->curr_node->phone, list->curr_node->price, list->curr_node->address,
-        list->curr_node->enter_date.year, list->curr_node->enter_date.month, 
-        list->curr_node->enter_date.day, list->curr_node->enter_date.time,
-        list->curr_node->exit_date.year, list->curr_node->exit_date.month,
-        list->curr_node->exit_date.day, list->curr_node->exit_date.time);
+                list->curr_node->name, list->curr_node->phone, list->curr_node->price, list->curr_node->address,
+                list->curr_node->enter_date.year, list->curr_node->enter_date.month,
+                list->curr_node->enter_date.day, list->curr_node->enter_date.time,
+                list->curr_node->exit_date.year, list->curr_node->exit_date.month,
+                list->curr_node->exit_date.day, list->curr_node->exit_date.time);
 
         list->curr_node = list->curr_node->prev;
     }
@@ -707,7 +706,7 @@ void refine_stDate(_stDate *date, char *temp)
 int checkAvailability(t_List *list, t_Node *target_reservation)
 {
     int i, flag;
-    char curr_node_enter_time[30] = {'\0'}, curr_node_exit_time[30] = {'\0'}, 
+    char curr_node_enter_time[30] = {'\0'}, curr_node_exit_time[30] = {'\0'},
          target_reservation_enter_time[30] = {'\0'}, target_reservation_exit_time[30] = {'\0'};
 
     // printf("최초 테일 값 list->tail_node->roomno: %d\n", list->tail_node->roomno);
@@ -726,7 +725,7 @@ int checkAvailability(t_List *list, t_Node *target_reservation)
         if (list->curr_node->roomno == target_reservation->roomno)
         {
             // printf("반복문if진입 list->curr_node->roomno: %d // target_reservation->roomno: %d\n", list->curr_node->roomno, target_reservation->roomno);
-            curr_node_enter_time[0] = '\0'; 
+            curr_node_enter_time[0] = '\0';
             curr_node_exit_time[0] = '\0';
             target_reservation_enter_time[0] = '\0';
             target_reservation_exit_time[0] = '\0';
@@ -750,23 +749,23 @@ int checkAvailability(t_List *list, t_Node *target_reservation)
             strcat(target_reservation_exit_time, target_reservation->exit_date.day);
             strcat(target_reservation_exit_time, target_reservation->exit_date.time);
 
-            if (atoll(target_reservation_enter_time) >= atoll(curr_node_enter_time) && atoll(target_reservation_enter_time) <= atoll(curr_node_exit_time)) 
+            if (atoll(target_reservation_enter_time) >= atoll(curr_node_enter_time) && atoll(target_reservation_enter_time) <= atoll(curr_node_exit_time))
             {
-                flag = 1; 
+                flag = 1;
                 // printf("케이스(1) 플래그 온\n");
                 list->curr_node = list->curr_node->prev;
-                continue; 
+                continue;
             }
             if (atoll(target_reservation_exit_time) >= atoll(curr_node_enter_time) && atoll(target_reservation_exit_time) <= atoll(curr_node_exit_time))
             {
-                flag = 1; 
+                flag = 1;
                 // printf("케이스(2) 플래그 온\n");
                 list->curr_node = list->curr_node->prev;
                 continue;
             }
             if (atoll(target_reservation_enter_time) <= atoll(curr_node_enter_time) && atoll(target_reservation_exit_time) >= atoll(curr_node_exit_time))
             {
-                flag = 1; 
+                flag = 1;
                 // printf("케이스(3) 플래그 온\n");
                 list->curr_node = list->curr_node->prev;
                 continue;
@@ -777,6 +776,8 @@ int checkAvailability(t_List *list, t_Node *target_reservation)
         list->curr_node = list->curr_node->prev;
     }
 
-    if (flag == 1) return 0; // 예약 불가능
-    else return 1; // 예약 가능
+    if (flag == 1)
+        return 0; // 예약 불가능
+    else
+        return 1; // 예약 가능
 }
