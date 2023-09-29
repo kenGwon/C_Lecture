@@ -8,7 +8,7 @@ int main(void)
 
     printf("%d\n", i);
     printf("%d\n", sizeof(i));
-
+    printf("%s\n", type(i));
 
     return 0;
 }
